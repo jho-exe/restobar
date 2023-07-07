@@ -18,6 +18,7 @@ export default function Admin() {
                 <Orden
                     key={orden.id}
                     orden={orden}
+                    
                 />
             ) : <p>No hay ordenes pendientes</p>}
         </AdminLayout>

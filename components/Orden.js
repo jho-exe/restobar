@@ -2,18 +2,25 @@ import Image from "next/image"
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { formatearDinero } from '../helpers'
+import React, { useState } from 'react';
 
 export default function Orden({orden}) {
     const {id, nombre, total, pedido} = orden
+    const [isReady, setIsReady] = useState(false);
+    const [isVerified, setIsVerified] = useState(false);
 
     const completarOrden = async () => {
         try {
            await axios.post(`/api/ordenes/${id}`)
+           setIsReady(true);
            toast.success('Orden Lista')
         } catch (error) {
            console.log(error)
         }
-        
+    }
+
+    const handleVerificationClick = () => {
+        setIsVerified(true);
     }
 
   return (
@@ -42,16 +49,25 @@ export default function Orden({orden}) {
             ))}
         </div>
         <div className="md:flex md:items-center md:justify-between my-10">
-                <p className="mt-5 font-black text-4xl text-amber-500">
-                    Total a pagar: {formatearDinero(total)}
-                </p>
+            <p className="mt-5 font-black text-4xl text-amber-500">
+                Total a pagar: {formatearDinero(total)}
+            </p>
+
+            {isVerified ? (
+                <div className="flex items-center">
+                    <p className="mr-2">Validado</p>
+                    <img src="/check-icon.png" alt="Check Icon" className="w-6 h-6" />
+                </div>
+            ) : (
+                <button className="bg-green-600 hover:bg-green-800 text-white mt-5 md>mt-0 py-3 px-10 uppercase font-bold rounded-lg" type="button" onClick={handleVerificationClick}>
+                    Validar
+                </button>
+            )}
 
                 <button className="bg-indigo-600 hover:bg-indigo-800 text-white mt-5 md>mt-0 py-3 px-10 uppercase font-bold rounded-lg" type="button" onClick={completarOrden}>
                     Completar Orden
                 </button>
         </div>
     </div>
-
   )
 }
-
